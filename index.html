@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>雲林・嘉義・阿里山三日遊 互動地圖</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F6F3;--card:#fff;--ink:#14231D;--sub:#44564E;--line:#C9D6CF;--d1:#A4480B;--d2:#1B6B4A;--d3:#1D5A8C;--fs:20px;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101A16;--card:#1A2823;--ink:#F1F6F3;--sub:#B7C6BE;--line:#35493F;--d1:#F0A15F;--d2:#6FD1A2;--d3:#7DBDF0;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101A16;--card:#1A2823;--ink:#F1F6F3;--sub:#B7C6BE;--line:#35493F;--d1:#F0A15F;--d2:#6FD1A2;--d3:#7DBDF0;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 var(--fs)/1.6 "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding:12px 14px 40px}
+h1{font-size:1.35em;margin:6px 0 2px;font-weight:900}
+.sub{color:var(--sub);font-size:.8em;margin:0 0 10px}
+.size{display:flex;gap:8px;align-items:center;margin-bottom:10px;font-size:.8em;color:var(--sub)}
+button{font:inherit;color:inherit;cursor:pointer}
+.size button{min-width:56px;min-height:48px;border:2px solid var(--line);border-radius:12px;background:var(--card);font-weight:700}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tab{min-height:68px;border:3px solid var(--line);border-radius:14px;background:var(--card);font-weight:900;line-height:1.25;padding:6px}
+.tab small{display:block;font-weight:400;font-size:.7em;color:var(--sub)}
+.tab[aria-selected=true]{background:var(--c);border-color:var(--c);color:#fff}
+.tab[aria-selected=true] small{color:#fff}
+.mapbox{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:6px}
+svg{display:block;width:100%;height:auto;max-height:70vh}
+.mk{cursor:pointer}
+.mk:focus{outline:none}
+.mk:focus-visible circle{stroke:var(--ink);stroke-width:4}
+.cap{font-size:.7em;color:var(--sub);margin:4px 6px 2px}
+.card{background:var(--card);border:3px solid var(--c);border-radius:16px;padding:14px 16px;margin:12px 0}
+.time{font-weight:700;color:var(--c);font-size:.9em}
+.card h2{font-size:1.3em;margin:2px 0 8px;font-weight:900;line-height:1.35}
+.card p{margin:6px 0}
+.tip{background:var(--tint);border-left:6px solid var(--c);border-radius:8px;padding:8px 12px;margin:10px 0}
+.go{display:block;text-align:center;text-decoration:none;color:#fff;background:var(--c);border-radius:14px;min-height:60px;line-height:60px;font-weight:900;margin:12px 0 10px}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nav button{min-height:60px;border:3px solid var(--c);border-radius:14px;background:var(--card);font-weight:900}
+.nav button:disabled{opacity:.35}
+.list{margin:0;padding:0;list-style:none}
+.list li button{width:100%;text-align:left;display:flex;gap:12px;align-items:center;min-height:64px;padding:8px 12px;margin-bottom:8px;border:2px solid var(--line);border-radius:14px;background:var(--card)}
+.list li button[aria-current=true]{border-color:var(--c);border-width:4px}
+.n{flex:none;width:38px;height:38px;border-radius:50%;background:var(--c);color:#fff;font-weight:900;text-align:center;line-height:38px}
+.list b{display:block;line-height:1.3}.list span.t{font-size:.75em;color:var(--sub)}
+h3{font-size:1.1em;margin:22px 0 8px}
+.wx{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 12px;margin:12px 0}
+.wx h3{margin:2px 0 8px}
+.wr{border-left:8px solid var(--c);background:var(--tint);border-radius:10px;padding:8px 12px;margin-bottom:8px}
+.wr .a{font-weight:700;color:var(--sub);font-size:.85em}
+.wr .b{font-weight:900;font-size:1.25em;line-height:1.35}
+.wr .b small{font-weight:700;font-size:.65em;color:var(--sub);margin-left:4px}
+.wr .c{margin-top:2px}
+.wn{font-size:.7em;color:var(--sub);margin:4px 2px 0}
+.todo label{display:flex;gap:12px;align-items:center;min-height:52px;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:6px 12px;margin-bottom:6px}
+.todo input{width:28px;height:28px;flex:none}
+.warn{background:var(--card);border:3px solid var(--d1);border-radius:14px;padding:10px 14px;margin:12px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>雲林・嘉義・阿里山 三日遊</h1>
+<p class="sub">10/29–10/31　點地圖上的圓圈，或按「下一站」</p>
+<div class="size"><span>字體：</span><button id="fm">小</button><button id="fb">大</button><button id="ft">特大</button></div>
+<div class="tabs" role="tablist" id="tabs"></div>
+<div class="mapbox"><svg id="map" viewBox="0 0 400 440" role="img" aria-label="行程示意地圖"></svg><p class="cap">※ 示意圖，距離與方位為大概，不是精準地圖。實際路線請按「導航」。</p></div>
+<div class="card" id="card" aria-live="polite"></div>
+<div class="wx" id="wx"></div>
+<h3 id="lt"></h3>
+<ul class="list" id="list"></ul>
+<h3>出發前待辦（可打勾）</h3>
+<div class="todo" id="todo"></div>
+</div>
+<script>
+const D=[
+{c:'var(--d1)',tint:'rgba(164,72,11,.10)',name:'第 1 天',date:'10/29 週四',title:'雲林包車・嘉義住宿',
+bg:'M40 120 Q120 60 250 90 L330 200 Q300 330 230 420 L40 420Z',
+st:[
+{s:'台北車站',t:'09:30',n:'台北車站・買早餐',x:300,y:38,q:'台北車站',d:'先買好早餐，再到高鐵月台。',tip:'高鐵 10:01 開車，請提早 20–30 分鐘到，避開排隊人潮。'},
+{s:'雲林高鐵',t:'11:16',n:'高鐵雲林站・與司機會合',x:270,y:125,via:'高鐵 75 分',q:'高鐵雲林站',d:'11:16 到站，11:30 與包車司機會合。',tip:'車上可以吃早餐、休息。'},
+{s:'馬鳴山',t:'12:00–14:00',n:'馬鳴山鎮安宮・五年千歲公園',x:110,y:178,via:'包車',q:'馬鳴山鎮安宮',d:'全台最大迷宮公園，73 個景點。走完約 1.5 小時，累了有捷徑可提早出來。',tip:'午餐：廟前小吃，或開車 5 分鐘到褒忠市區吃「生炒鴨肉羹」「阿財豬血湯」。'},
+{s:'鄧麗君',t:'14:30–15:30',n:'鄧麗君出生地文化園區',x:150,y:225,via:'包車',q:'鄧麗君出生地文化園區 雲林褒忠',d:'傳統三合院，播放老歌，空間不大，適合拍照休息。'},
+{s:'老街',t:'16:00–17:30',n:'老街（北港或新港，二選一）',x:120,y:305,via:'包車',q:'新港奉天宮 老街',d:'北港：鴨肉飯、圓仔湯、囍餅伴手禮。新港：生炒鴨肉羹、大樹下粉圓冰、陳氏姊妹蒸餃。',tip:'離晚餐還早，每樣只吃一點點，留肚子給晚餐。'},
+{s:'景義文旅',t:'18:30',n:'景義文旅・住宿 Check-in',x:215,y:362,via:'包車 1 小時',q:'景義文旅 嘉義',d:'先放行李。',tip:'可先派一人去林聰明抽號碼牌，再回來放行李，省排隊時間。'},
+{s:'林聰明',t:'18:45 起',n:'林聰明沙鍋魚頭・晚餐',x:300,y:395,via:'',q:'林聰明沙鍋魚頭 嘉義',d:'必點：沙鍋魚頭、火雞肉飯、太陽蛋、涼菜。地址：嘉義市東區中正路 361 號。',tip:'吃飽可散步到旁邊文化路夜市，喝御香屋葡萄柚綠茶。'}]},
+{c:'var(--d2)',tint:'rgba(27,107,74,.10)',name:'第 2 天',date:'10/30 週五',title:'上阿里山・住山水清暉',
+bg:'M30 420 L30 300 Q150 280 220 200 L300 60 Q370 20 380 120 L380 420Z',
+st:[
+{s:'嘉義車站',t:'08:40 發車',n:'嘉義車站・搭台灣好行阿里山線',x:60,y:360,q:'嘉義火車站',d:'08:40 上車，車程約 2.5 小時。',tip:'行李已寄送，雙手輕鬆。請提早到站排隊。'},
+{s:'阿里山',t:'11:10–14:30',n:'阿里山國家森林遊樂區',x:330,y:85,via:'公車 2.5 小時',q:'阿里山國家森林遊樂區',d:'先吃午餐，再搭遊園車或小火車。看沼平車站、姊妹潭、受鎮宮、神木群。',tip:'⚠ 一定要搭 14:40 或 15:10 的下山客運去石棹，不要錯過。'},
+{s:'石棹',t:'15:30–16:15',n:'石棹：農會超市＋7-11',x:225,y:215,via:'客運 50 分',q:'阿里山鄉農會 石棹',d:'先到農會買高山茶、山葵椒鹽。再到旁邊 7-11 買今晚的泡麵、零食。',tip:'⚠ 農會約 16:30 打烊，請先去農會。'},
+{s:'櫻之道',t:'16:15–18:00',n:'櫻之道 → 霧之道（散步）',x:275,y:168,via:'步行',q:'阿里山 霧之道',d:'從 7-11 往上走 5–10 分鐘到石棹資訊站，進櫻之道（木棧道約 130 公尺，平緩）。再走霧之道約 800 公尺，傍晚常有雲海。全程約 1.5 小時。',tip:'路上有階梯，穿好走的鞋，慢慢走、多休息。'},
+{s:'山水清暉',t:'18:00 起',n:'山水清暉民宿・住宿與晚餐',x:325,y:150,via:'步行',q:'山水清暉 阿里山',d:'走出霧之道北端幾步就到。辦理入住、吃民宿晚餐，晚上看夜景。',tip:'⚠ 16:00 前要打電話訂晚餐，18:00 準時開飯。'}]},
+{c:'var(--d3)',tint:'rgba(29,90,140,.10)',name:'第 3 天',date:'10/31 週六',title:'山城・搭高鐵回家',
+bg:'M30 420 L40 330 Q150 290 230 210 L300 40 Q370 20 380 120 L380 420Z',
+st:[
+{s:'山水清暉',t:'08:00–09:30',n:'民宿早餐・茶之道、雲之道',x:320,y:70,q:'山水清暉 阿里山',d:'吃完早餐在民宿旁散步。茶之道視野開闊，雲之道有杉木芬多精。',tip:'09:30 回房整理行李，與包車司機會合。'},
+{s:'奮起湖',t:'10:00–12:00',n:'奮起湖老街',x:295,y:170,via:'包車 20 分',q:'奮起湖老街',d:'先買檜木甜甜圈、阿嬤草仔粿，再吃鐵路便當。吃飽走走肖楠母樹林。',tip:'避開中午人潮，早點去。'},
+{s:'二延平',t:'12:30–14:30',n:'隙頂二延平步道・觀雲平台',x:225,y:215,via:'包車 30 分',q:'二延平步道',d:'沿茶園與竹林階梯而上，下午常見雲海。',tip:'階梯較多，量力而為，可只走一小段。'},
+{s:'觸口',t:'15:10–15:30',n:'觸口遊客中心・旺萊山',x:160,y:275,via:'包車 40 分',q:'觸口遊客中心',d:'下車活動筋骨、上洗手間，試吃旺萊山土鳳梨酥。'},
+{s:'糖廠',t:'16:10–16:40',n:'蒜頭糖廠蔗埕文化園區',x:95,y:335,via:'包車 40 分',q:'蒜頭糖廠蔗埕文化園區',d:'買根傳統冰棒（紅豆或芋頭），在日式老宿舍散步。',tip:'若下山塞車，請司機判斷是否跳過。'},
+{s:'嘉義高鐵',t:'16:45',n:'高鐵嘉義站・17:08 北上',x:60,y:395,via:'包車 10 分',q:'高鐵嘉義站',d:'搭 17:08 北上高鐵，平安回家。',tip:'車票先分票、確認好車廂。'}]}
+];
+const TODO=['10/29 高鐵南下車票','10/29 南下車票分票','10/29 約好雲林包車司機及動線','10/30 台灣好行車票（klook 2＋1）','10/30 阿里山門票（klook 1＋kkday 2）','10/30 行李寄送改地點','10/30 16:00 前民宿訂餐（18:00 準時用餐）','10/31 約好嘉義包車司機及動線','10/31 高鐵北上車票','10/31 高鐵票分票'];
+const W=[
+[['☀️ 白天｜雲林包車','晴朗','27~29°C','偏熱','0%','👕 短袖或薄長袖。平地溫暖，注意防曬、多喝水。'],['🌙 晚上｜嘉義市區','晴朗','24~26°C','舒適','0%','👕 舒適秋裝。氣溫宜人，很適合逛文化路夜市。']],
+[['☀️ 上午｜阿里山園區','晴朗','18°C','舒適','0%','🧥 薄外套。高海拔紫外線強，天氣穩定舒適。'],['☁️ 下午｜石棹步道','陰轉多雲','18~20°C','微涼','10–20%','🧥 防風薄外套。下午易起霧，建議帶摺疊傘。'],['🌙 晚上｜石棹民宿','多雲','17~18°C','偏涼','0–10%','🧣 保暖衣物。陽台看夜景要穿長袖加保暖外套。']],
+[['🌅 清晨｜石棹步道','晴朗','16°C','偏涼','0%','🧣 洋蔥式穿搭。早起偏涼，太陽出來、走動後會變舒適。'],['🌤️ 下午｜隙頂／觸口','多雲轉晴','25~28°C','回暖','0%','👕 脫下外套。下山回平地後氣溫明顯回升。'],['🌇 傍晚｜高鐵嘉義站','晴朗','26~29°C','溫暖','0%','👕 輕便穿搭。天氣溫暖穩定，準備搭車回家。']]
+];
+let day=0,i=0;const $=id=>document.getElementById(id);
+function esc(s){return s}
+function set(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function fs(px){document.documentElement.style.setProperty('--fs',px+'px');set('fs',px)}
+$('fm').onclick=()=>fs(20);$('fb').onclick=()=>fs(24);$('ft').onclick=()=>fs(28);
+const saved=get('fs');if(saved)fs(+saved);
+function render(){
+const d=D[day],s=d.st[i];
+document.documentElement.style.setProperty('--c',d.c);document.documentElement.style.setProperty('--tint',d.tint);
+$('tabs').innerHTML=D.map((x,k)=>`<button class="tab" role="tab" aria-selected="${k==day}" style="--c:${x.c}" data-k="${k}">${x.name}<small>${x.date}</small></button>`).join('');
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{day=+b.dataset.k;i=0;render()});
+let g=`<path d="${d.bg}" fill="var(--d2)" opacity=".10"/>`;
+d.st.forEach((p,k)=>{if(k){const a=d.st[k-1];g+=`<line x1="${a.x}" y1="${a.y}" x2="${p.x}" y2="${p.y}" stroke="${d.c}" stroke-width="4" stroke-dasharray="${p.via&&p.via.indexOf('高鐵')>=0?'2 8':'10 7'}" stroke-linecap="round"/>`;
+if(p.via)g+=`<text x="${(a.x+p.x)/2+8}" y="${(a.y+p.y)/2}" font-size="15" font-weight="700" fill="var(--sub)" stroke="var(--card)" stroke-width="4" paint-order="stroke">${p.via}</text>`}});
+d.st.forEach((p,k)=>{const on=k==i,tx=p.x>250?'end':'start',ox=p.x>250?-26:26;
+g+=`<g class="mk" tabindex="0" role="button" aria-label="第${k+1}站 ${p.n}" data-k="${k}"><circle cx="${p.x}" cy="${p.y}" r="${on?25:19}" fill="${d.c}" stroke="var(--card)" stroke-width="3"/><text x="${p.x}" y="${p.y+7}" text-anchor="middle" font-size="${on?22:19}" font-weight="900" fill="#fff">${k+1}</text><text x="${p.x+ox}" y="${p.y+6}" text-anchor="${tx}" font-size="${on?19:16}" font-weight="900" fill="var(--ink)" stroke="var(--card)" stroke-width="4" paint-order="stroke">${p.s}</text></g>`});
+$('map').innerHTML=g;
+document.querySelectorAll('.mk').forEach(m=>{m.onclick=()=>{i=+m.dataset.k;render()};m.onkeydown=e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();m.onclick()}}});
+$('card').innerHTML=`<div class="time">第 ${i+1} 站 ／ 共 ${d.st.length} 站　🕒 ${s.t}</div><h2>${s.n}</h2><p>${s.d}</p>${s.tip?`<div class="tip">${s.tip}</div>`:''}<a class="go" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.q)}">📍 開啟 Google 地圖導航</a><div class="nav"><button id="pv" ${i==0?'disabled':''}>◀ 上一站</button><button id="nx" ${i==d.st.length-1?'disabled':''}>下一站 ▶</button></div>`;
+$('pv').onclick=()=>{i--;render()};$('nx').onclick=()=>{i++;render()};
+$('wx').innerHTML='<h3>🌤️ '+d.name+' 天氣與穿搭</h3>'+W[day].map(w=>`<div class="wr"><div class="a">${w[0]}</div><div class="b">${w[1]}　${w[2]}<small>${w[3]}　降雨 ${w[4]}</small></div><div class="c">${w[5]}</div></div>`).join('')+'<p class="wn">氣溫為預報，出發前一天請再確認。</p>';
+$('lt').textContent=d.name+'・'+d.title;
+$('list').innerHTML=d.st.map((p,k)=>`<li><button data-k="${k}" ${k==i?'aria-current="true"':''}><span class="n">${k+1}</span><span><b>${p.n}</b><span class="t">${p.t}</span></span></button></li>`).join('');
+document.querySelectorAll('#list button').forEach(b=>b.onclick=()=>{i=+b.dataset.k;render();window.scrollTo({top:0,behavior:'smooth'})});
+}
+$('todo').innerHTML=TODO.map((t,k)=>`<label><input type="checkbox" data-k="${k}" ${get('todo'+k)=='1'?'checked':''}>${t}</label>`).join('');
+document.querySelectorAll('.todo input').forEach(c=>c.onchange=()=>set('todo'+c.dataset.k,c.checked?'1':'0'));
+render();
+</script>
+</body>
+</html>
